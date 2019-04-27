@@ -1,0 +1,5 @@
+﻿add_subdirectory("getopt")
+add_subdirectory("glibc")
+add_subdirectory("mini_chromium")
+add_subdirectory("xnu")
+add_subdirectory("zlib")
