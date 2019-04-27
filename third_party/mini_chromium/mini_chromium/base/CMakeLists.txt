@@ -1,0 +1,126 @@
+﻿set(srcs
+    "../build/build_config.h"
+    "atomicops.h"
+    "atomicops_internals_atomicword_compat.h"
+    "atomicops_internals_portable.h"
+    "auto_reset.h"
+    "bit_cast.h"
+    "compiler_specific.h"
+    "debug/alias.cc"
+    "debug/alias.h"
+    "files/file_path.cc"
+    "files/file_path.h"
+    "files/file_util.h"
+    "files/scoped_file.cc"
+    "files/scoped_file.h"
+    "format_macros.h"
+    "logging.cc"
+    "logging.h"
+    "macros.h"
+    "memory/free_deleter.h"
+    "memory/scoped_policy.h"
+    "metrics/histogram_functions.h"
+    "metrics/histogram_macros.h"
+    "metrics/persistent_histogram_allocator.h"
+    "numerics/checked_math.h"
+    "numerics/checked_math_impl.h"
+    "numerics/clamped_math.h"
+    "numerics/clamped_math_impl.h"
+    "numerics/safe_conversions.h"
+    "numerics/safe_conversions_arm_impl.h"
+    "numerics/safe_conversions_impl.h"
+    "numerics/safe_math.h"
+    "numerics/safe_math_arm_impl.h"
+    "numerics/safe_math_clang_gcc_impl.h"
+    "numerics/safe_math_shared_impl.h"
+    "process/memory.cc"
+    "process/memory.h"
+    "process/process_metrics.h"
+    "rand_util.cc"
+    "rand_util.h"
+    "scoped_clear_errno.h"
+    "scoped_generic.h"
+    "stl_util.h"
+    "strings/string16.cc"
+    "strings/string16.h"
+    "strings/string_number_conversions.cc"
+    "strings/string_number_conversions.h"
+    "strings/string_piece.h"
+    "strings/string_util.h"
+    "strings/stringprintf.cc"
+    "strings/stringprintf.h"
+    "strings/sys_string_conversions.h"
+    "strings/utf_string_conversion_utils.cc"
+    "strings/utf_string_conversion_utils.h"
+    "strings/utf_string_conversions.cc"
+    "strings/utf_string_conversions.h"
+    "synchronization/condition_variable.h"
+    "synchronization/lock.cc"
+    "synchronization/lock.h"
+    "synchronization/lock_impl.h"
+    "sys_byteorder.h"
+    "template_util.h"
+    "third_party/icu/icu_utf.cc"
+    "third_party/icu/icu_utf.h"
+    "threading/thread_local_storage.cc"
+    "threading/thread_local_storage.h"
+)
+add_library(base STATIC ${srcs})
+target_include_directories(base PUBLIC "..")
+
+if(UNIX)
+    target_sources(base PRIVATE
+        "files/file_util_posix.cc"
+        "posix/eintr_wrapper.h"
+        "posix/safe_strerror.cc"
+        "posix/safe_strerror.h"
+        "process/process_metrics_posix.cc"
+        "strings/string_util_posix.h"
+        "synchronization/condition_variable_posix.cc"
+        "synchronization/lock_impl_posix.cc"
+        "threading/thread_local_storage_posix.cc"
+    )
+endif()
+
+if(APPLE)
+    target_sources(base PRIVATE
+        "mac/close_nocancel.cc"
+        "mac/foundation_util.h"
+        "mac/foundation_util.mm"
+        "mac/mach_logging.cc"
+        "mac/mach_logging.h"
+        "mac/scoped_cftyperef.h"
+        "mac/scoped_ioobject.h"
+        "mac/scoped_launch_data.h"
+        "mac/scoped_mach_port.cc"
+        "mac/scoped_mach_port.h"
+        "mac/scoped_mach_vm.cc"
+        "mac/scoped_mach_vm.h"
+        "mac/scoped_nsautorelease_pool.h"
+        "mac/scoped_nsautorelease_pool.mm"
+        "mac/scoped_nsobject.h"
+        "mac/scoped_typeref.h"
+        "strings/sys_string_conversions_mac.mm"
+    )
+    target_link_libraries(base PUBLIC
+        "ApplicationServices.framework"
+        "CoreFoundation.framework"
+        "Foundation.framework"
+        "IOKit.framework"
+        "Security.framework"
+    )
+elseif(WIN32)
+    target_sources(base PRIVATE
+        "process/process_metrics_win.cc"
+        "strings/string_util_win.cc"
+        "strings/string_util_win.h"
+        "synchronization/lock_impl_win.cc"
+        "threading/thread_local_storage_win.cc"
+    )
+    target_compile_definitions(base PUBLIC "UNICODE" "_UNICODE")
+    target_link_libraries(base PUBLIC "advapi32.lib")
+endif()
+
+install(TARGETS base)
+install(DIRECTORY "../" DESTINATION "include/mini_chromium"
+    FILES_MATCHING PATTERN "*.h")
