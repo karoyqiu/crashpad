@@ -63,7 +63,7 @@ if(WIN32)
         "win/winnt.h"
         "win/winternl.h"
     )
-    target_compile_definitions(compat PUBLIC "WIN32_LEAN_AND_MEAN")
+    target_compile_definitions(compat PUBLIC "WIN32_LEAN_AND_MEAN" "NOMINMAX")
     target_link_libraries(compat PUBLIC getopt)
 else()
     target_include_directories(compat PUBLIC "non_win")

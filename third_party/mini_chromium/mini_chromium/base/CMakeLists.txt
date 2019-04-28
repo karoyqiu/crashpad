@@ -117,7 +117,7 @@ elseif(WIN32)
         "synchronization/lock_impl_win.cc"
         "threading/thread_local_storage_win.cc"
     )
-    target_compile_definitions(base PUBLIC "UNICODE" "_UNICODE")
+    target_compile_definitions(base PUBLIC "UNICODE" "_UNICODE" "NOMINMAX")
     target_link_libraries(base PUBLIC "advapi32.lib")
 endif()
 
